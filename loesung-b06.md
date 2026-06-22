@@ -80,3 +80,64 @@ Für diese Aufgabe fand ich den `AstBuilderPattern` einfacher. Mit den JUnit-Tes
 
 
 
+
+---
+
+## Aufgabe 5: AST-Normalisierung
+
+In dieser Aufgabe habe ich die Methode `AstBuilders.simplify` ergänzt.
+
+Die Methode vereinfacht einen AST. Dabei wird zum Beispiel ein doppeltes `not` entfernt.
+
+Aus:
+
+`not not artist == "Beatles"`
+
+wird:
+
+`artist == "Beatles"`
+
+Dafür habe ich einen `switch` mit Pattern Matching benutzt. Die verschiedenen AST-Knoten werden erkannt und ihre inneren Ausdrücke werden rekursiv vereinfacht.
+
+Ich habe zusätzlich zwei JUnit-Tests geschrieben. Ein Test prüft einen doppelten `not` am Anfang des AST. Der zweite Test prüft einen doppelten `not` innerhalb eines `And`-Ausdrucks.
+
+
+
+
+---
+
+## Aufgabe 6: Approval Testing
+
+In dieser Aufgabe habe ich Approval Tests für die beiden AST-Builder geschrieben.
+
+Dafür werden verschiedene Queries zuerst in einen AST umgewandelt. Danach wird der AST mit dem `AstPrinter` als Text ausgegeben.
+
+Beim ersten Testlauf wurden `.received.txt`-Dateien erstellt. Ich habe die Ergebnisse geprüft und danach als `.approved.txt` gespeichert.
+
+Bei späteren Testläufen wird der neue Text mit dem gespeicherten Ergebnis verglichen. Wenn sich die Ausgabe unerwartet verändert, schlägt der Test fehl.
+
+Ich habe einfache und komplexere Queries getestet. Außerdem wird geprüft, ob der `AstBuilderVisitor` und der `AstBuilderPattern` dieselbe Ausgabe erzeugen.
+
+
+
+
+---
+
+## Aufgabe 7: Property-based Testing
+
+In dieser Aufgabe habe ich Property-based Tests mit jqwik geschrieben.
+
+Anders als bei normalen JUnit-Tests werden die Queries nicht alle von Hand geschrieben. jqwik erzeugt automatisch viele verschiedene Werte und Filter-Abfragen.
+
+Ich habe unter anderem diese Eigenschaften geprüft:
+
+* Ein AST bleibt nach dem Ausgeben und erneuten Einlesen gleich.
+* Der Roundtrip funktioniert mit dem `AstBuilderVisitor`.
+* Der Roundtrip funktioniert mit dem `AstBuilderPattern`.
+* Ein AST vom Visitor kann vom Pattern-Builder wieder eingelesen werden.
+* `A and A` hat dasselbe Ergebnis wie `A`.
+* `A and B` hat dasselbe Ergebnis wie `B and A`.
+
+Dadurch konnten beide AST-Builder mit vielen automatisch erzeugten Queries getestet werden.
+
+
